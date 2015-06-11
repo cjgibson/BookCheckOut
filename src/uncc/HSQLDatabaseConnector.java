@@ -1,4 +1,4 @@
-package uncc.src;
+package uncc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
