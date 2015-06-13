@@ -45,7 +45,7 @@ public class ISBNLookup {
      * @return
      * @throws IOException
      */
-    public Book Lookup(String inISBN) throws IOException {
+    public static Book Lookup(String inISBN) throws IOException {
         String cnISBN = ISBN.cleanISBN(inISBN);
         URL url = new URL(API + cnISBN);
         BufferedReader res = new BufferedReader(

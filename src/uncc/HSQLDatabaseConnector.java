@@ -5,7 +5,7 @@ import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.SQLException;
 import java.util.stream.Stream;
-//import org.hsqldb.*;
+import org.hsqldb.*;
 
 /**
  * <p>Simple wrapper class intended to provide simplified access to HyperSQL's
@@ -13,8 +13,8 @@ import java.util.stream.Stream;
  * 
  * @author  Christian Gibson
  * @version 0.1
- * @date    June 9th, 2015
- * @isodate 2015-06-09T17:00:00-04:00
+ * @date    June 13th, 2015
+ * @isodate 2015-06-13T14:00:00-04:00
  */
 
 public class HSQLDatabaseConnector {

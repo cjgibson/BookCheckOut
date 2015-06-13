@@ -3,7 +3,18 @@ package uncc.helpers;
 import java.io.CharConversionException;
 import java.util.InputMismatchException;
 
+/**
+ * 
+ * @author  Christian Gibson
+ * @version 0.1
+ * @date    June 13th, 2015
+ * @isodate 2015-06-13T14:00:00-04:00
+ */
+
 public class ISBN {
+    /**
+     * 
+     */
     private String isbn, isbn10, isbn13;
     private static final String[] LEGAL_ISBN13_PREFIX = {
         "978", "979"
@@ -23,10 +34,17 @@ public class ISBN {
         }
     }
     
+    /**
+     * @param isbn
+     */
     public ISBN(int isbn) {
         this("" + isbn);
     }
     
+    /**
+     * @param isbn10
+     * @param isbn13
+     */
     public ISBN(int isbn10, int isbn13) {
         this("" + isbn10, "" + isbn13);
     }
@@ -147,7 +165,8 @@ public class ISBN {
         if (isbn.startsWith("978")) {
             isbn = isbn.substring(3, 12);
             try {
-                isbn += calculateISBN10CheckSum(isbn);
+                int chck = calculateISBN10CheckSum(isbn);
+                isbn += (chck == 10) ? 'X' : "" + chck;
             } catch (CharConversionException e) {
                 throw new IllegalArgumentException();
             }
