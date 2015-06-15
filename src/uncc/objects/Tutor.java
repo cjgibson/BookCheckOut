@@ -1,4 +1,4 @@
-package uncc.helpers;
+package uncc.objects;
 
 /**
  * 
@@ -9,6 +9,11 @@ package uncc.helpers;
  */
 
 public class Tutor extends Student {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 5624670506783199112L;
+    
     /**
      * 
      */

@@ -1,4 +1,4 @@
-package uncc.helpers;
+package uncc.objects;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,12 @@ import java.util.HashMap;
  * @isodate 2015-06-13T14:00:00-04:00
  */
 
-public class Timesheet {
+public class Timesheet extends HSQLDatabaseObject {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 1231306635987666623L;
+    
     /**
      * 
      */

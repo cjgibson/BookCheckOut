@@ -1,4 +1,4 @@
-package uncc.helpers;
+package uncc.objects;
 
 import java.util.Date;
 
@@ -10,7 +10,13 @@ import java.util.Date;
  * @isodate 2015-06-13T14:00:00-04:00
  */
 
-public class Rental {
+public class Rental extends HSQLDatabaseObject {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 8122977511621486765L;
+    private transient int id;
+    
     /**
      * 
      */
@@ -86,4 +92,8 @@ public class Rental {
      * @param dueDate
      */
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
+
+    public int getID() { return this.id; }
+
+    public void setID(int id) { this.id = id; }
 }

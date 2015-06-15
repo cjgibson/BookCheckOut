@@ -1,4 +1,4 @@
-package uncc.helpers;
+package uncc.objects;
 
 /**
  * 
@@ -8,7 +8,13 @@ package uncc.helpers;
  * @isodate 2015-06-13T14:00:00-04:00
  */
 
-public class Book {
+public class Book extends HSQLDatabaseObject {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7555989536191994405L;
+    private transient int id;
+    
     /**
      * 
      */
@@ -81,4 +87,8 @@ public class Book {
                 this.getISBN13(), this.getISBN10(), this.title,
                 this.author, this.publisher, this.publishedDate);
     }
+    
+    public int getID() { return this.id; }
+
+    public void setID(int id) { this.id = id; }
 }

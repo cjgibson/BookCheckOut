@@ -1,4 +1,4 @@
-package uncc.helpers;
+package uncc.objects;
 
 /**
  * 
@@ -8,7 +8,13 @@ package uncc.helpers;
  * @isodate 2015-06-13T14:00:00-04:00
  */
 
-public class Student {
+public class Student extends HSQLDatabaseObject {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = 2428236299171180421L;
+    private transient int id;
+    
     /**
      * 
      */
@@ -74,6 +80,7 @@ public class Student {
      * @return
      */
     public String getEmailAddress() { return this.emailAddress; }
+    public int getID() { return this.id; }
     
     /**
      * @param uniqueID
@@ -83,4 +90,5 @@ public class Student {
      * @param emailAddress
      */
     public void setEmail(String emailAddress) { this.emailAddress = emailAddress; }
+    public void setID(int id) { this.id = id; }
 }

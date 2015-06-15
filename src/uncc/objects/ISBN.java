@@ -1,4 +1,4 @@
-package uncc.helpers;
+package uncc.objects;
 
 import java.io.CharConversionException;
 import java.util.InputMismatchException;
@@ -11,7 +11,13 @@ import java.util.InputMismatchException;
  * @isodate 2015-06-13T14:00:00-04:00
  */
 
-public class ISBN {
+public class ISBN extends HSQLDatabaseObject {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -1714760310448862343L;
+    private transient int id;
+    
     /**
      * 
      */
@@ -293,4 +299,8 @@ public class ISBN {
         }
         return (10 - (chck % 10)) % 10;
     }
+    
+    public int getID() { return this.id; }
+
+    public void setID(int id) { this.id = id; }
 }

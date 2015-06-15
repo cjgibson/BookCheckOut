@@ -12,8 +12,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import uncc.helpers.Book;
-import uncc.helpers.ISBN;
+import uncc.objects.Book;
+import uncc.objects.ISBN;
 
 /**
  * <p>Class utilized to gather information about a book from its ISBN.</p>

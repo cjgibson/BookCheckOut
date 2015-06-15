@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import uncc.helpers.ISBN;
+import uncc.objects.ISBN;
 
 public class TestISBN {
 

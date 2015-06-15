@@ -1,4 +1,4 @@
-package uncc.helpers;
+package uncc.objects;
 
 import javax.management.BadAttributeValueExpException;
 
@@ -10,7 +10,12 @@ import javax.management.BadAttributeValueExpException;
  * @isodate 2015-06-13T14:00:00-04:00
  */
 
-public class HourRange {
+public class HourRange extends HSQLDatabaseObject {
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -7496825459343024349L;
+    
     /**
      * 
      */
