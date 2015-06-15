@@ -1,7 +1,12 @@
 package uncc.tables;
 
-public class StudentTable extends HSQLDatabaseTable {
-    StudentTable(String dbname) {
+import java.sql.SQLException;
+
+import uncc.HSQLDatabaseConnection;
+import uncc.objects.Student;
+
+public class StudentTable extends HSQLDatabaseTable<Student> {
+    public StudentTable(HSQLDatabaseConnection dbname) throws SQLException {
         super(dbname);
     }
 

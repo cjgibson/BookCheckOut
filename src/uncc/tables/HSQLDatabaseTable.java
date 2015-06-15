@@ -14,18 +14,19 @@ import java.util.HashMap;
 
 import org.hsqldb.*;
 
+import uncc.HSQLDatabaseConnection;
 import uncc.objects.HSQLDatabaseObject;
 
 abstract class HSQLDatabaseTable<E extends HSQLDatabaseObject> {
-    private static final String DBPATH = "jdbc:hsqldb:file:";
     private Type type = ((ParameterizedType) this.getClass()
                                                  .getGenericSuperclass())
                                                  .getActualTypeArguments()[0];
     private final String tbname = ((Class) type).getSimpleName();
+    static HSQLDatabaseConnection hsqldb;
     static Connection dbconn;
     static HSQLDatabaseTable instance;
-    private PreparedStatement stmtGetLastID, stmtGetRowCount, stmtCreate,
-        stmtInsert, stmtUpdate, stmtDelete, stmtGetByID, stmtIterAll;
+    private PreparedStatement stmtGetLastID, stmtCreate, stmtInsert, stmtUpdate,
+        stmtDelete, stmtGetByID, stmtIterAll;
     private String strCreate, strInsert, strUpdate, strDelete, strGetByID, strIterAll;
     private static final HashMap<Type, String> TYPEMAP = new HashMap<>();
     static {
@@ -47,56 +48,37 @@ abstract class HSQLDatabaseTable<E extends HSQLDatabaseObject> {
         TYPEMAP.put(String.class, "VARCHAR(1024)");
     }
     
-    HSQLDatabaseTable(String dbname) {
+    HSQLDatabaseTable(HSQLDatabaseConnection hsqldb) throws SQLException {
         identifyFields();
-        initializeDriver();
-        try {
-            dbconn = DriverManager.getConnection(DBPATH + dbname, "sa", "");
-        } catch (SQLException e) {
-            throw new IllegalStateException("SQL Server Connection failed with"
-                    + " error code " + e.getErrorCode() + ".");
-        }
+        HSQLDatabaseTable.hsqldb = hsqldb;
+        HSQLDatabaseTable.dbconn = hsqldb.getConnection();
         initializeStatements();
         instance = this;
     }
     
-    private void initializeDriver() {
+    private void initializeStatements() throws SQLException {
         try {
-            Class.forName("org.hsqldb.jdbcDriver");
-        } catch (Exception e) {
-            throw new IllegalStateException();
-        }
-    }
-    
-    private void initializeStatements() {
-        try {
-            this.stmtCreate = coerce(this.strCreate);
-            this.stmtInsert = coerce(this.strInsert);
-            this.stmtUpdate = coerce(this.strUpdate);
-            this.stmtDelete = coerce(this.strDelete);
-            this.stmtGetByID = coerce(this.strGetByID);
-            this.stmtIterAll = coerce(this.strIterAll);
-            this.stmtGetLastID = dbconn.prepareStatement("call identity()");
-            this.stmtGetRowCount = dbconn.prepareStatement(
-                    "SELECT COUNT(*) FROM " + tbname + ";");
+            this.stmtGetLastID = coerce("call identity()");
+            if (getRowCount() == -1) {
+                update(this.strCreate);
+            }
         } catch (SQLException e) {
-            throw new IllegalStateException();
-        }
-        if (getRowCount() == -1) {
-            execute(this.stmtCreate);
+            throw e;
         }
     }
     
-    private PreparedStatement coerce(String str) {
+    private PreparedStatement coerce(String str) throws SQLException {
         try {
             return dbconn.prepareStatement(str);
         } catch (SQLException e) {
-            throw new IllegalStateException();
+            System.err.println("Failed to coerce String into PreparedStatement"
+                    + " with error " + e.getErrorCode() + ":\n  " + e + "\n");
+            throw e;
         }
     }
     
     private int getRowCount() {
-        ResultSet res = execute(stmtGetRowCount);
+        ResultSet res = execute("SELECT COUNT(*) FROM " + this.tbname + ";");
         if (res == null)
             return -1;
         try {
@@ -109,20 +91,26 @@ abstract class HSQLDatabaseTable<E extends HSQLDatabaseObject> {
         }
     }
     
-    protected ResultSet execute(PreparedStatement stmt) {
+    protected int update(String str) {
         try {
-            ResultSet res = stmt.executeQuery();
-            return res;
+            PreparedStatement stmt = coerce(str);
+            int status = stmt.executeUpdate();
+            return status;
         } catch (SQLException e) {
-            return null;
+            System.err.println("Failed to update SQL String with error: " 
+                    + e.getErrorCode() + ": " + e + "\n" + str + "\n");
+            return -1;
         }
     }
     
     protected ResultSet execute(String str) {
         try {
-            PreparedStatement stmt = dbconn.prepareStatement(str);
-            return execute(stmt);
+            PreparedStatement stmt = coerce(str);
+            ResultSet res = stmt.executeQuery();
+            return res;
         } catch (SQLException e) {
+            System.err.println("Failed to execute SQL String with error "
+                    + e.getErrorCode() + ": " + e + "\n" + str + "\n");
             return null;
         }
     }
@@ -142,11 +130,11 @@ abstract class HSQLDatabaseTable<E extends HSQLDatabaseObject> {
         
         this.strCreate = ""
                 + "CREATE CACHED TABLE " + this.tbname
-                + "(\n  Obj OBJECT,"
-                + "\n  ID INTEGER IDENTITY";
+                + " (\n  Obj OBJECT NOT NULL,"
+                + "\n  ID INTEGER GENERATED BY DEFAULT AS IDENTITY NOT NULL";
         this.strInsert = ""
                 + "INSERT INTO " + this.tbname
-                + "(\n  Obj,\n  ID";
+                + " (Obj, ID";
         this.strUpdate = ""
                 + "UPDATE " + this.tbname + " SET"
                 + "\n  Obj = ?";
@@ -156,39 +144,39 @@ abstract class HSQLDatabaseTable<E extends HSQLDatabaseObject> {
                 if (TYPEMAP.containsKey(field.getType())) {
                     this.strCreate += ",\n  " + field.getName() + " " 
                             + TYPEMAP.get(field.getType());
-                    this.strInsert += ",\n  " + field.getName();
+                    this.strInsert += ", " + field.getName();
                     this.strUpdate += ",\n  " + field.getName() + " = ?";
                 } else {
                     this.strCreate += ",\n  " + field.getName() + " OBJECT";
-                    this.strInsert += ",\n  " + field.getName();
+                    this.strInsert += ", " + field.getName();
                     this.strUpdate += ",\n  " + field.getName() + " = ?";
                 }
             }
         }
         
-        this.strCreate += ",\n  UNIQUE(ID) \n);\n";
-        this.strInsert += "\n) VALUES (?, ?";
+        this.strCreate += ",\n  PRIMARY KEY (ID)\n);";
+        this.strInsert += ")\n  VALUES (?, ?";
         for (int i = 0; i < numOfFields; i++) {
             this.strInsert += ", ?";
         }
-        this.strInsert += ");\n";
-        this.strUpdate += "\n  WHERE ID = ?;\n";
+        this.strInsert += ");";
+        this.strUpdate += "\n  WHERE ID = ?;";
         
         this.strDelete = ""
                 + "DELETE FROM " + this.tbname
-                + "\n  WHERE ID = ?;\n";
+                + "\n  WHERE ID = ?;";
         this.strGetByID = ""
                 + "SELECT Obj\n  FROM " + this.tbname
-                + "\n  WHERE ID = ?;\n";
+                + "\n  WHERE ID = ?;";
         this.strIterAll = ""
                 + "SELECT Obj, ID\n  FROM " + this.tbname
-                + "\n  ORDER BY ID;\n";
+                + "\n  ORDER BY ID;";
         
-        System.out.println(this.strCreate);
-        System.out.println(this.strInsert);
-        System.out.println(this.strUpdate);
-        System.out.println(this.strDelete);
-        System.out.println(this.strGetByID);
-        System.out.println(this.strIterAll);
+        //System.out.println(this.strCreate);
+        //System.out.println(this.strInsert);
+        //System.out.println(this.strUpdate);
+        //System.out.println(this.strDelete);
+        //System.out.println(this.strGetByID);
+        //System.out.println(this.strIterAll);
     }
 }

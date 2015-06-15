@@ -1,7 +1,12 @@
 package uncc.tables;
 
-public class RentalTable extends HSQLDatabaseTable {
-    RentalTable(String dbname) {
+import java.sql.SQLException;
+
+import uncc.HSQLDatabaseConnection;
+import uncc.objects.Rental;
+
+public class RentalTable extends HSQLDatabaseTable<Rental> {
+    public RentalTable(HSQLDatabaseConnection dbname) throws SQLException {
         super(dbname);
     }
 }
