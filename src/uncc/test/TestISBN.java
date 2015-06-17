@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.junit.Test;
 
+import uncc.ISBNLookup;
+import uncc.objects.Book;
 import uncc.objects.ISBN;
 
 public class TestISBN {
@@ -189,6 +191,7 @@ public class TestISBN {
                 assertEquals(convISBN13s[i], isbn.getISBN10());
             }
         } catch (IllegalArgumentException e) {
+            System.err.println(e);
             fail();
         }
     }
@@ -201,6 +204,7 @@ public class TestISBN {
             for (int i = 0; i < testISBN10s.length; i++)
                 new ISBN(testISBN10s[i], convISBN10s[i]);
         } catch (Exception e) {
+            System.err.println(e);
             fail();
         }
     }
@@ -210,10 +214,11 @@ public class TestISBN {
         try {
             for (int i = 0; i < testISBN10s.length; i++) {
                 int chck = ISBN.calculateISBN10CheckSum(testISBN10s[i]);
-                assertEquals(testISBN10s[i].substring(9, 10),
+                assertEquals(ISBN.cleanISBN(testISBN10s[i]).substring(9, 10),
                              (chck == 10) ? "X" : "" + chck);
             }
         } catch (Exception e) {
+            System.err.println(e);
             fail();
         }
     }
@@ -223,10 +228,64 @@ public class TestISBN {
         try {
             for (int i = 0; i < testISBN13s.length; i++) {
                 int chck = ISBN.calculateISBN13CheckSum(testISBN13s[i]);
-                assertEquals(testISBN13s[i].substring(12, 13), "" + chck);
+                assertEquals(ISBN.cleanISBN(testISBN13s[i]).substring(12, 13),
+                             "" + chck);
             }
         } catch (Exception e) {
+            System.err.println(e);
             fail();
         }
     }
+    
+    @Test
+    public void testNetworkISBN10Conversion() {
+        try {
+            for (int i = 0; i < testISBN10s.length; i++) {
+                try {
+                    Book book = ISBNLookup.Lookup(testISBN10s[i]);
+                    ISBN isbn = book.getISBN();
+                    if (!convISBN10s[i].equals(isbn.getISBN13())) {
+                        System.err.println("Expected " + convISBN10s[i]
+                                + " but got " + isbn.getISBN13() + ".");
+                    }
+                    System.out.println(book);
+                    System.out.println();
+                } catch (NullPointerException e) {
+                    System.err.println("Recieved no information for '"
+                            + testISBN10s[i] + "'.");
+                } catch (IOException e) {
+                    System.err.println("Network call failed on '"
+                            + testISBN10s[i] + "'.");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            fail();
+        }
+    }
+    
+    @Test
+    public void testNetworkISBN13Conversion() {
+        try {
+            for (int i = 0; i < testISBN13s.length; i++) {
+                try {
+                    Book book = ISBNLookup.Lookup(testISBN13s[i]);
+                    ISBN isbn = book.getISBN();
+                    if (!convISBN13s[i].equals(isbn.getISBN10())) {
+                        System.err.println("Expected " + convISBN13s[i]
+                                + " but got " + isbn.getISBN10() + ".");
+                    }
+                    System.out.println(book);
+                } catch (NullPointerException e) {
+                    System.err.println("Recieved no information for '"
+                            + testISBN13s[i] + "'.");
+                } catch (IOException e) {
+                    System.err.println("Network call failed on '"
+                            + testISBN13s[i] + "'.");
+                }
+            }
+        } catch (IllegalArgumentException e) {
+            System.err.println(e);
+            fail();
+        }
+    } 
 }

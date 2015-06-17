@@ -18,7 +18,7 @@ public class Student extends HSQLDatabaseObject {
     /**
      * 
      */
-    private String firstName, lastName, middleInit, uniqueID, emailAddress;
+    private String firstName, lastName, middleInit, studentID, emailAddress;
     
     /**
      * @param firstName
@@ -75,7 +75,7 @@ public class Student extends HSQLDatabaseObject {
     /**
      * @return
      */
-    public String getStudentID() { return this.uniqueID; }
+    public String getStudentID() { return this.studentID; }
     /**
      * @return
      */
@@ -85,7 +85,7 @@ public class Student extends HSQLDatabaseObject {
     /**
      * @param uniqueID
      */
-    public void setID(String uniqueID) { this.uniqueID = uniqueID; }
+    public void setID(String uniqueID) { this.studentID = uniqueID; }
     /**
      * @param emailAddress
      */

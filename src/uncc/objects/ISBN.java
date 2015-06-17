@@ -217,7 +217,9 @@ public class ISBN extends HSQLDatabaseObject {
             if (calculateISBN10CheckSum(isbn) == checkSum) {
                 return true;
             }
-        } catch (CharConversionException e) {}
+        } catch (CharConversionException e) {
+            return false;
+        }
         
         return false;
     }
@@ -229,6 +231,7 @@ public class ISBN extends HSQLDatabaseObject {
      */
     public static int calculateISBN10CheckSum(String isbn)
             throws CharConversionException {
+        isbn = cleanISBN(isbn);
         if (isbn.length() > 9) {
             isbn = isbn.substring(0, 9);
         }
@@ -284,6 +287,7 @@ public class ISBN extends HSQLDatabaseObject {
      */
     public static int calculateISBN13CheckSum(String isbn)
             throws CharConversionException {
+        isbn = cleanISBN(isbn);
         if (isbn.length() > 12) {
             isbn = isbn.substring(0, 12);
         }

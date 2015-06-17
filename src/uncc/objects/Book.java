@@ -68,6 +68,13 @@ public class Book extends HSQLDatabaseObject {
     /**
      * @return
      */
+    public ISBN getISBN() {
+        return this.isbn;
+    }
+    
+    /**
+     * @return
+     */
     public String getISBN10() {
         return this.isbn.getISBN10();
     }
@@ -88,7 +95,11 @@ public class Book extends HSQLDatabaseObject {
                 this.author, this.publisher, this.publishedDate);
     }
     
-    public int getID() { return this.id; }
+    public int getID() {
+        return this.id;
+    }
 
-    public void setID(int id) { this.id = id; }
+    public void setID(int id) {
+        this.id = id;
+    }
 }
