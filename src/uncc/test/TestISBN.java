@@ -11,6 +11,15 @@ import uncc.ISBNLookup;
 import uncc.objects.Book;
 import uncc.objects.ISBN;
 
+/**
+ * Test class for uncc.objects.ISBN and uncc.ISBNLookup.
+ * 
+ * @author  Christian Gibson
+ * @version 0.1
+ * @date    June 17th, 2015
+ * @isodate 2015-06-17T20:00:00-04:00
+ */
+
 public class TestISBN {
 
     String[] testISBN13s = {

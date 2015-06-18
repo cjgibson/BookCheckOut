@@ -3,22 +3,27 @@ package uncc.objects;
 import java.util.Date;
 
 /**
+ * Object that holds information about a book Rental.
  * 
  * @author  Christian Gibson
  * @version 0.1
- * @date    June 13th, 2015
- * @isodate 2015-06-13T14:00:00-04:00
+ * @date    June 17th, 2015
+ * @isodate 2015-06-17T20:00:00-04:00
  */
 
 public class Rental extends HSQLDatabaseObject {
     /**
-     * 
+     * The serialVersionID required by java.io.Serializable.
      */
     private static final long serialVersionUID = 8122977511621486765L;
-    private transient int id;
     
     /**
-     * 
+     * Fields used by the Rental object:
+     *   Student student: The student renting the book.
+     *   Tutor tutor: The tutor who rented the book to the student.
+     *   Book book: The book that was rented to the student.
+     *   Date dueDate: The date the rental is due back to the tutor.
+     *   Date rentalDate: The date the rental was made.
      */
     private Student student;
     private Tutor tutor;
@@ -26,8 +31,12 @@ public class Rental extends HSQLDatabaseObject {
     private Date dueDate, rentalDate;
     
     /**
-     * @param student
-     * @param book
+     * Constructor for the Rental object. It is assumed that this book has no
+     *   concrete due date, and that no tutor is in charge of monitoring this
+     *   rental.
+     * 
+     * @param student The student the book is rented to.
+     * @param book The book the student rented.
      */
     public Rental(Student student, Book book) {
         this.student = student;
@@ -37,9 +46,12 @@ public class Rental extends HSQLDatabaseObject {
     }
     
     /**
-     * @param student
-     * @param book
-     * @param tutor
+     * Constructor for the Rental object. It is assumed that this book has no
+     *   concrete due date.
+     * 
+     * @param student The student the book is rented to.
+     * @param book The book the student rented.
+     * @param tutor The tutor who oversees this rental.
      */
     public Rental(Student student, Book book, Tutor tutor) {
         this(student, book);
@@ -47,9 +59,12 @@ public class Rental extends HSQLDatabaseObject {
     }
     
     /**
-     * @param student
-     * @param book
-     * @param dueDate
+     * Constructor for the Rental object. It is assumed that no tutor is in
+     *   charge of monitoring this rental.
+     * 
+     * @param student The student the book is rented to.
+     * @param book The book the student rented.
+     * @param dueDate The date the book is due back to the tutoring center.
      */
     public Rental(Student student, Book book, Date dueDate) {
         this(student, book);
@@ -57,10 +72,12 @@ public class Rental extends HSQLDatabaseObject {
     }
     
     /**
-     * @param student
-     * @param book
-     * @param dueDate
-     * @param tutor
+     * Constructor for the Rental object.
+     * 
+     * @param student The student the book is rented to.
+     * @param book The book the student rented.
+     * @param dueDate The date the book is due back to the tutoring center.
+     * @param tutor The tutor who oversees this rental.
      */
     public Rental(Student student, Book book, Date dueDate, Tutor tutor) {
         this(student, book, dueDate);
@@ -68,32 +85,32 @@ public class Rental extends HSQLDatabaseObject {
     }
     
     /**
-     * @return
+     * @return The student who rented the book.
      */
     public Student getStudent() { return this.student; }
+    
     /**
-     * @return
+     * @return The tutor who is overseeing this rental.
      */
     public Tutor getTutor() { return this.tutor; }
+    
     /**
-     * @return
+     * @return The book involved in this rental.
      */
     public Book getBook() { return this.book; }
+    
     /**
-     * @return
+     * @return The date the book is due back to the tutoring center.
      */
     public Date getDueDate() { return this.dueDate; }
+    
     /**
-     * @return
+     * @return The date this rental occurred.
      */
     public Date getRentalDate() { return this.rentalDate; }
     
     /**
-     * @param dueDate
+     * @param dueDate The new dueDate for this rental.
      */
     public void setDueDate(Date dueDate) { this.dueDate = dueDate; }
-
-    public int getID() { return this.id; }
-
-    public void setID(int id) { this.id = id; }
 }

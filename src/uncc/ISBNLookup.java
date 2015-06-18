@@ -17,40 +17,44 @@ import uncc.objects.ISBN;
 
 /**
  * <p>Class utilized to gather information about a book from its ISBN.</p>
- * <p>Relies on Google's Book API.</p>
+ * <p>Intended to simply serve as a container for functions related to
+ * fetching book information from the Google Books API (version 1).</p>
  * 
  * @author  Christian Gibson
  * @version 0.1
- * @date    June 9th, 2015
- * @isodate 2015-06-09T18:00:00-04:00
+ * @date    June 17th, 2015
+ * @isodate 2015-06-17T20:00:00-04:00
  */
 
 public class ISBNLookup {
     /**
-     * 
+     * Private static final strings used to authenticate with, and access the
+     *   Google Books API. The String API contains the root URL used to access
+     *   the API itself (default: "https://www.googleapis.com/books/v1/volumes?q="),
+     *   EXT contains any RESTful URI parameter/value pairs used in making calls
+     *   to the API (default: "&key="), and the final field, KEY, contains the
+     *   user's API key for the Google Books API.
      */
     private static final String API = ""
             + "https://www.googleapis.com/books/v1/volumes?q=";
     private static final String EXT = ""
-            + "&key=AIzaSyBSZdW-b36zD3TNLiYTtcyzafAieQZ_nM8";
+            + "&key=";
+    private static final String KEY = ""
+            + "";
     
     /**
-     * @param isbn
-     * @throws IOException
-     */
-    public ISBNLookup() throws IOException {
-        
-    }
-    
-    /**
-     * @param isbn
-     * @return
-     * @throws IOException
+     * Performs a network-based lookup of a book's details using the Google
+     * Books API. Returns a uncc.objects.book object.
+     * 
+     * @param inISBN The ISBN (either ISBN10 or ISBN13) for a given book as a String.
+     * @return A new book object, containing details found for the passed
+     *          ISBN String. In the case no information is found, null is returned.
+     * @throws IOException In the case of a network error.
      */
     public static Book Lookup(String inISBN) throws IOException {
         try {
             String cnISBN = ISBN.cleanISBN(inISBN);
-            URL url = new URL(API + cnISBN + EXT);
+            URL url = new URL(API + cnISBN + EXT + KEY);
             BufferedReader res = new BufferedReader(
                     new InputStreamReader(url.openStream(),
                             Charset.forName("UTF-8")));
